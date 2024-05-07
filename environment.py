@@ -132,11 +132,13 @@ class SnakeGameEnv:
         self.place_food()
 
     def reset(self):
+        len = [snake.score for snake in self.snakes]
         snake_pos = random.sample(range(int((BLOCK_X - 2) * (BLOCK_Y - 2))), self.num_snakes)
         for count, pos in enumerate(snake_pos):
             self.snakes[count].respawn(x=int(pos / (BLOCK_X - 2)) + 1, y=pos % (BLOCK_Y - 2) + 1)
         self.place_food()
         self.gamenum += 1
+        return len
 
     def play_step(self, actions):
         reward = np.zeros(self.num_snakes)
@@ -176,8 +178,7 @@ class SnakeGameEnv:
                 self.snakes[i].die()
                 if RESPAWN:
                     self.snakes[i].alive = True
-        if True:#self.gamenum > 750:
-            self.render()
+        self.render()
 
         new_obs = [snake.get_state() for snake in self.snakes]
 
